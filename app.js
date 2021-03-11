@@ -2,16 +2,25 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const { db, User, Page } = require("./models");
+
+const wiki = require('./routes/wiki');
+const user = require('./routes/users');
+
 app.use(morgan("dev"));
+
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/wiki', wiki);
+app.use('/users', user);
 
 db.authenticate().then(() => {
   console.log("connected to the database");
 });
 
 app.get("/", (req, res) => {
-  res.send("Hello world");
+  
+  res.redirect('/wiki');
 });
 
 const init = async () => {
@@ -37,3 +46,5 @@ app.listen(PORT, () => {
 });
 
 init();
+
+
